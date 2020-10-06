@@ -17,21 +17,20 @@ func Fuzz(data []byte) int {
 		// this is not supported
 		return 0
 	}
-	str := data[:len(data)/2]
-	sstr := string(str)
+	sstr := string(data[:len(data)/2])
 	// restrb := data[len(data)/2:]
 	restr := string(data[len(data)/2:])
 
 	score := 0
 	vm := goja.New()
 
-	execString := func(str string) func(s, r string) {
+	execString := func(template string) func(s, r string) {
 		return func(s, r string) {
-			str = fmt.Sprintf(str, s, r)
+			str := fmt.Sprintf(template, s, r)
 			defer func() {
 				if r := recover(); r != nil {
 					if !strings.Contains(fmt.Sprint(r), "Invalid regular expression") {
-						panic(fmt.Sprintf("'%#v'\n%s", []byte(str), r))
+						panic(fmt.Sprintf("%s\n'%#v'\n'%s'\n", r, []byte(str), str))
 					}
 				}
 			}()
