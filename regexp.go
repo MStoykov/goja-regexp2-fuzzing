@@ -44,6 +44,7 @@ func Fuzz(data []byte) int {
 		if err != nil {
 			return
 		}
+		score = 1
 		re.FindStringMatch(s)
 
 		re, err = regexp2.Compile(r, regexp2.ECMAScript)
