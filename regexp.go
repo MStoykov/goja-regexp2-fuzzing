@@ -6,6 +6,7 @@ package regexp
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/dlclark/regexp2"
 	"github.com/dop251/goja"
@@ -29,9 +30,9 @@ func Fuzz(data []byte) int {
 			str = fmt.Sprintf(str, s, r)
 			defer func() {
 				if r := recover(); r != nil {
-					// if !strings.Contains(fmt.Sprint(r), "Invalid regular expression") {
-					panic(fmt.Sprintf("'%s'\n%s", str, r))
-					//}
+					if !strings.Contains(fmt.Sprint(r), "Invalid regular expression") {
+						panic(fmt.Sprintf("'%#v'\n%s", []byte(str), r))
+					}
 				}
 			}()
 			vm.RunString(str)
